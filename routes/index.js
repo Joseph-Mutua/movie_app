@@ -5,7 +5,7 @@ const axios = require("axios");
 const apiKey = "3b590e7bad40ab5efefeac4771f25bb0";
 const apiBaseUrl = "https://api.themoviedb.org/3";
 const nowPlayingUrl = `${apiBaseUrl}/movie/now_playing?api_key=${apiKey}`;
-const imageBaseUrl = "https://image.tmdb.org/t/p/w500";
+const imageBaseUrl = "https://image.tmdb.org/t/p/w300";
 
 router.use((req, res, next) => {
   res.locals.imageBaseUrl = imageBaseUrl;
@@ -21,6 +21,30 @@ router.get("/", async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
+});
+
+router.get("/movie/:id", (req, res, next) => {
+  const movieId = req.params.id;
+  const thismovieUrl = `${apiBaseUrl}/movie/${movieId}?api_key=${apiKey}`;
+  // console.log(thismovieUrl);
+  // try {
+  //   const response = await axios.get(thismovieUrl);
+  //   const movieDetails = response.data;
+  //   // console.log(movieDetails);
+  //    res.render("single_movie", { movieDetails });
+  // } catch (err) {
+  //   console.log(err);
+  // }
+
+  axios
+    .get(thismovieUrl)
+    .then((response) => {
+      const movieDetails = response.data
+      res.render("single_movie", {movieDetails});
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 module.exports = router;
