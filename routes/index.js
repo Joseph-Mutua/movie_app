@@ -39,8 +39,29 @@ router.get("/movie/:id", (req, res, next) => {
   axios
     .get(thismovieUrl)
     .then((response) => {
-      const movieDetails = response.data
-      res.render("single_movie", {movieDetails});
+      const movieDetails = response.data;
+      res.render("single_movie", { movieDetails });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+router.post("/search", (req, res, next) => {
+  // res.send("Sanity Check");
+  const searchTerm = encodeURI(req.body.movieSearch);
+  const cat = req.body.cat;
+  const movieUrl = `${apiBaseUrl}/search/${cat}?query=${searchTerm}&api_key=${apiKey}`;
+
+  axios
+    .get(movieUrl)
+    .then((response) => {
+      let movieData = response.data.results;
+      if (cat === "person") {
+        movieData = response.data.results[0].known_for;
+      }
+
+      res.render("index", { movieData });
     })
     .catch((err) => {
       console.log(err);
