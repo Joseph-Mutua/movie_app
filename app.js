@@ -4,28 +4,45 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 
-
-
-const passport = require("passport");
-const GitHubStrategy = require("passport-github").Strategy;
-
-console.log(GitHubStrategy)
+var app = express();
+const helmet = require("helmet");
 
 var indexRouter = require("./routes/index");
 
-
 //============PASSPORT CONFIG==================//
-const passportConfig = require("./passportConfig")
+const session = require("express-session");
+
+app.use(
+  session({
+    secret: "Mutua is just awesome",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true },
+  })
+);
+
+const passport = require("passport");
+app.use(passport.initialize());
+app.use(passport.session());
+const GitHubStrategy = require("passport-github").Strategy;
+
+const passportConfig = require("./passportConfig");
 passport.use(
-  new GitHubStrategy(passportConfig,
+  new GitHubStrategy(
+    passportConfig,
     function (accessToken, refreshToken, profile, cb) {
-     console.log(profile)
+      console.log(profile);
+      return cb(null, profile);
     }
   )
 );
 
-var app = express();
-const helmet = require("helmet");
+passport.serializeUser((user, cb) => {
+  cb(null, user);
+});
+passport.deserializeUser((user, cb) => {
+  cb(null, user);
+});
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));

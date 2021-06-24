@@ -20,6 +20,7 @@ router.use((req, res, next) => {
 
 /* GET home page. */
 router.get("/", async (req, res, next) => {
+  console.log(req.user);
   try {
     const response = await axios.get(nowPlayingUrl);
     const movieData = response.data.results;
@@ -30,6 +31,14 @@ router.get("/", async (req, res, next) => {
 });
 
 router.get("/login", passport.authenticate("github"));
+
+router.get(
+  "/auth",
+  passport.authenticate("github", {
+    successRedirect: "/",
+    failureRedirect: "/loginFailed",
+  })
+);
 
 router.get("/movie/:id", (req, res, next) => {
   const movieId = req.params.id;
