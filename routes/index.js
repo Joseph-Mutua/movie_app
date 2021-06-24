@@ -1,11 +1,17 @@
 var express = require("express");
 var router = express.Router();
 const axios = require("axios");
+const passport = require("passport");
 
 const apiKey = "3b590e7bad40ab5efefeac4771f25bb0";
 const apiBaseUrl = "https://api.themoviedb.org/3";
 const nowPlayingUrl = `${apiBaseUrl}/movie/now_playing?api_key=${apiKey}`;
 const imageBaseUrl = "https://image.tmdb.org/t/p/w300";
+
+// const apiKey = "12345689";
+// const apiBaseUrl = "http://localhost:3030";
+// const nowPlayingUrl = `${apiBaseUrl}/most_popular?api_key=${apiKey}`;
+// const imageBaseUrl = "https://image.tmdb.org/t/p/w300";
 
 router.use((req, res, next) => {
   res.locals.imageBaseUrl = imageBaseUrl;
@@ -22,6 +28,8 @@ router.get("/", async (req, res, next) => {
     console.log(err);
   }
 });
+
+router.get("/login", passport.authenticate("github"));
 
 router.get("/movie/:id", (req, res, next) => {
   const movieId = req.params.id;

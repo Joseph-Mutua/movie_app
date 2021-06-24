@@ -4,7 +4,25 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 
+
+
+const passport = require("passport");
+const GitHubStrategy = require("passport-github").Strategy;
+
+console.log(GitHubStrategy)
+
 var indexRouter = require("./routes/index");
+
+
+//============PASSPORT CONFIG==================//
+const passportConfig = require("./passportConfig")
+passport.use(
+  new GitHubStrategy(passportConfig,
+    function (accessToken, refreshToken, profile, cb) {
+     console.log(profile)
+    }
+  )
+);
 
 var app = express();
 const helmet = require("helmet");
